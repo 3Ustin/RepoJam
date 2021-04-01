@@ -1,13 +1,13 @@
 //initilizing variables and canvas
 var ctx = document.getElementById("canvas").getContext("2d");
 // var image = document.getElementById("big-owl");
-var image = document.createElement("IMG");
-image.src = "img/GiantOwl.png";
+var playerImg = document.createElement("IMG");
+playerImg.src = "img/GiantOwlL.png";
 // document.body.appendChild(image);
 
 //loading all things that need loading.
 window.onload = function initGame(){
-    ctx.drawImage(image,80,80,100,100);
+    ctx.drawImage(playerImg,80,80,100,100);
 }
     //VARIABLES
 //Player Object holding position
@@ -30,16 +30,20 @@ function Bullet(x, y, toX,toY) {
 var drawBullets = []
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
-//This grabs player key input and uses it for updating player position.
+
+
+    //This grabs player key input and uses it for updating player position.
     document.onkeydown = function onKeyDown(e){
-        console.log("hello");
+        console.log("hello, key down");
         switch(e.key){
             //Key D -- RIGHT
             case "d":
+                playerImg.src = "img/walkR-legR.png"; 
                 player.x +=3;
                 break;
             //Key A -- LEFT
             case "a":
+                playerImg.src = "img/walkL-legL.png"; 
                 player.x -=3;
                 break;
             //Key S -- DOWN
@@ -52,6 +56,20 @@ function update(progress){
                 break;
         }
     }
+    document.onkeyup = function onKeyUp(e){ // on key up change image back to non-walking version..
+        console.log("hello, key up");
+        switch(e.key){
+            //Key D -- RIGHT
+            case "d":
+                playerImg.src = "img/GiantOwlR.png"; 
+                break;
+            //Key A -- LEFT
+            case "a":
+                playerImg.src = "img/GiantOwlL.png"; 
+                break;
+        }
+    }
+
 
     //Update bullets
     for(var i = 0; i < drawBullets.length; i++){
@@ -95,7 +113,7 @@ function draw(){
     ctx.clearRect(0,0,800,800);
 
     //drawing the player to the canvas
-    ctx.drawImage(image,player.x, player.y, 100,100);
+    ctx.drawImage(playerImg,player.x, player.y, 100,100);
 
     //Looping through the drawBullets array
     for(var i = 0; i < drawBullets.length; i++){
