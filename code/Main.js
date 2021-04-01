@@ -5,50 +5,16 @@ var image = document.createElement("IMG");
 image.src = "img/GiantOwl.png";
 // document.body.appendChild(image);
 
-<<<<<<< HEAD
-
-// draw border
-ctx.beginPath();
-ctx.lineWidth = "6";
-ctx.strokeStyle = "red";
-ctx.rect(5, 5, 500, 500);
-ctx.stroke();
-
-
-// window.onload = function initGame() {
-//     ctx.drawImage(image,80,80,100,100);
-// }
-
-window.onload = function initGame() {
-    ctx.drawImage(image,80,80,100,100);
-}
-
-
-
-
-// function testDrawImage() {
-//     ctx.drawImage(image,80,80,100,100);
-// }
-
-// initalize owl
-// setTimeout(testDrawImage, 3000)
-// ctx.drawImage(image,80,80,100,100);
-testDrawImage2()
-
-
-console.log("STOP WATCHING ME");
-
-function makeCircle () {
-  ctx.drawImage(image,80,80,100,100);
-=======
 //loading all things that need loading.
 window.onload = function initGame(){
     ctx.drawImage(image,80,80,100,100);
 }
->>>>>>> 2ab155736807bb12652ed9510698a280b1b28182
 
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
+
+    
+
     //This grabs player key input and uses it for updating player position.
     document.onkeydown = function(event){
         console.log(event.key);
@@ -78,12 +44,23 @@ function playerClick(event){
     player.lastMClickX = event.clientX;
     player.lastMClickY = event.clientY;
 }
+
+
+
 //This will draw all of the updates to the canvas.
 function draw(){
     //clearing the canvas of everything
     ctx.clearRect(0,0,800,800);
     //drawing the player to the canvas
-    ctx.drawImage(image,player.x, player.y, 100,100);
+    // ctx.drawImage(image,player.x, player.y, 100,100);
+
+    drawPlayer(player.x, player.y)
+    // ctx.beginPath();
+    // ctx.arc(player.x, player.y, 40, 0, 2 * Math.PI);
+    // ctx.fillStyle = "#0f7c8c";
+    // ctx.fill();
+
+    
 
     //drawing a circle where the player clicks and it actually stays.
     ctx.beginPath();
@@ -92,12 +69,14 @@ function draw(){
     ctx.stroke();
 }
 
-<<<<<<< HEAD
-document.onkeydown = function(e){
-    switch(e.key){
-        //Key D -- RIGHT
-        case 68:
-=======
+function drawPlayer(x, y) {
+    ctx.beginPath();
+    ctx.arc(x, y, 40, 0, 2 * Math.PI);
+    ctx.fillStyle = "#0f7c8c";
+    ctx.fill();
+    ctx.closePath();
+}
+
 //This will continully loop through the update and draw funtions.
 function loop(timestamp) {
     //progress will be the elapsed time since last render.
@@ -116,7 +95,6 @@ function loop(timestamp) {
 var lastRender = 0
 //Window object represents an open window in a browser.
 window.requestAnimationFrame(loop)
->>>>>>> 2ab155736807bb12652ed9510698a280b1b28182
 
 //Player Object holding position
 var player = {
