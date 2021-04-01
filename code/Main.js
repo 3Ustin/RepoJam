@@ -11,10 +11,10 @@ window.onload = function initGame(){
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
 //This grabs player key input and uses it for updating player position.
-    function onKeyDown(event){
+    document.onkeydown = function onKeyDown(e){
         console.log("hello");
-        console.log(event);
-        switch(event.key){
+        console.log(e);
+        switch(e.key){
             //Key D -- RIGHT
             case "d":
                 player.x +=3;
