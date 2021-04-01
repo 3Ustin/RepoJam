@@ -7,7 +7,24 @@ image.src = "img/GiantOwl.png";
 window.onload = function initGame(){
     ctx.drawImage(image,80,80,100,100);
 }
-
+    //VARIABLES
+//Player Object holding position
+var player = {
+    x: 80,
+    y: 80,
+    mPosX: 0,
+    mPosY: 0,
+    lastMClickX: 0,
+    lastMClickY: 0
+}
+//Bullet object for instantiation
+var bullet = {
+    PosX : 0,
+    PosY : 0,
+    velocity : 0
+}
+//Array of bullets to be drawn.
+var drawBullets = []
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
 //This grabs player key input and uses it for updating player position.
@@ -33,6 +50,7 @@ function update(progress){
                 break;
         }
     }
+
 }
     
 
@@ -57,35 +75,22 @@ function draw(){
 //This will continully loop through the update and draw funtions.
 function loop(timestamp) {
     //progress will be the elapsed time since last render.
-    var progress = timestamp - lastRender
+    var progress = timestamp - lastRender;
     //testing
-    console.log("Testing space: ")
+    console.log("Testing space: ");
     //updates all game variables before drawing.
-    update(progress)
+    update(progress);
     //draws everything needed drawing to the canvas.
-    draw()
+    draw();
     //while closing it checks the time for future reference.
-    lastRender = timestamp
-    window.requestAnimationFrame(loop)
+    lastRender = timestamp;
+    window.requestAnimationFrame(loop);
 }
 //init lastRender, a var that holds the amount of time has ellapsed before last loop of loop.
-var lastRender = 0
+var lastRender = 0;
 //Window object represents an open window in a browser.
-window.requestAnimationFrame(loop)
-
-//Player Object holding position
-var player = {
-    x: 80,
-    y: 80,
-    mPosX: 0,
-    mPosY: 0,
-    lastMClickX: 0,
-    lastMClickY: 0
-}
+window.requestAnimationFrame(loop);
 
 
 
-//TEST CODE FOR THE ENTIRE PAGE TO BE EFFECTED BY ONCLICK EVENTS.
-// document.onclick = function(event){
-//     console.log("X: " + event.clientX + ", and Y: " + event.clientY);
-// }
+
