@@ -68,31 +68,15 @@ function playerClick(event){
 function draw(){
     //clearing the canvas of everything
     ctx.clearRect(0,0,800,800);
-    //drawing the player to the canvas
-    // ctx.drawImage(image,player.x, player.y, 100,100);
-
-    drawPlayer(player.x, player.y)
-    // ctx.beginPath();
-    // ctx.arc(player.x, player.y, 40, 0, 2 * Math.PI);
-    // ctx.fillStyle = "#0f7c8c";
-    // ctx.fill();
-
     
-
+    //drawing the player to the canvas
     ctx.drawImage(image,player.x, player.y, 100,100);
+
     //drawing a circle where the player clicks and it actually stays.
     ctx.beginPath();
     ctx.arc(player.lastMClickX, player.lastMClickY, 50, 0, 2 * Math.PI);
     ctx.fill();
     ctx.stroke();
-}
-
-function drawPlayer(x, y) {
-    ctx.beginPath();
-    ctx.arc(x, y, 40, 0, 2 * Math.PI);
-    ctx.fillStyle = "#0f7c8c";
-    ctx.fill();
-    ctx.closePath();
 }
 
 //This will continully loop through the update and draw funtions.
