@@ -53,7 +53,6 @@ function update(progress){
         }
     }
 }
-THIS IS A CRAZY TEST THAT BREAKS THE GAEM!!!
     
 
 function playerClick(event){
