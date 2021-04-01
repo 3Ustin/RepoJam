@@ -10,9 +10,10 @@ window.onload = function initGame(){
 
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
-    //This grabs player key input and uses it for updating player position.
-    document.onkeydown = function(event){
-        console.log(event.key);
+//This grabs player key input and uses it for updating player position.
+    function onKeyDown(event){
+        console.log("hello");
+        console.log(event);
         switch(event.key){
             //Key D -- RIGHT
             case "d":
@@ -32,8 +33,9 @@ function update(progress){
                 break;
         }
     }
-    
 }
+    
+
 function playerClick(event){
     console.log("X: " + event.clientX + ", and Y: " + event.clientY);
     player.lastMClickX = event.clientX;
@@ -45,7 +47,6 @@ function draw(){
     ctx.clearRect(0,0,800,800);
     //drawing the player to the canvas
     ctx.drawImage(image,player.x, player.y, 100,100);
-
     //drawing a circle where the player clicks and it actually stays.
     ctx.beginPath();
     ctx.arc(player.lastMClickX, player.lastMClickY, 50, 0, 2 * Math.PI);
