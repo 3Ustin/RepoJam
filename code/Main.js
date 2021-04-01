@@ -19,5 +19,22 @@ function makeCircle(){
 }
 
 document.onkeydown = function(e){
+    switch(e.keyCode){
+        //Key D -- RIGHT
+        case 68:
 
+            break;
+        //Key A -- LEFT
+        case 65:
+
+            break;
+        //Key S -- DOWN
+        case 83:
+
+            break;
+        //Key W -- UP
+        case 87:
+
+            break;
+    }
 }
