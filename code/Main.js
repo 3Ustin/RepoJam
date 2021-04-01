@@ -19,11 +19,12 @@ var player = {
     lastMClickX: 0,
     lastMClickY: 0
 }
-//Bullet object for instantiation
-var bullet = {
-    PosX : 0,
-    PosY : 0,
-    velocity : 0
+//Bullet Constructor for instantiation of bullet objects
+function Bullet(x, y, toX,toY) {
+    this.PosX = x;
+    this.PosY = y;
+    this.toPosX = toX;
+    this.toPosY = toY;
 }
 //Array of bullets to be drawn.
 var drawBullets = []
@@ -32,7 +33,6 @@ function update(progress){
 //This grabs player key input and uses it for updating player position.
     document.onkeydown = function onKeyDown(e){
         console.log("hello");
-        console.log(e);
         switch(e.key){
             //Key D -- RIGHT
             case "d":
@@ -52,13 +52,39 @@ function update(progress){
                 break;
         }
     }
-}
-    
 
-function playerClick(event){
-    console.log("X: " + event.clientX + ", and Y: " + event.clientY);
-    player.lastMClickX = event.clientX;
-    player.lastMClickY = event.clientY;
+    //Update bullets
+    for(var i = 0; i < drawBullets.length; i++){
+        var xPop = false;
+        var yPop = false;
+        console.log("Update Bullets: " + drawBullets[i] + drawBullets[i].PosY);
+        if(drawBullets[i].PosX > drawBullets[i].toPosX){
+            drawBullets[i].PosX = drawBullets[i].PosX - (drawBullets[i].PosX - drawBullets[i].toPosX)/32;
+        }
+        if(drawBullets[i].PosX < drawBullets[i].toPosX){
+            drawBullets[i].PosX = drawBullets[i].PosX + (drawBullets[i].toPosX - drawBullets[i].PosX)/32;
+        }
+        if((drawBullets[i].PosX <= drawBullets[i].toPosX + .9 && drawBullets[i].PosX >= drawBullets[i].toPosX) || 
+           (drawBullets[i].PosX >= drawBullets[i].toPosX - .9 && drawBullets[i].PosX <= drawBullets[i].toPosX)){
+            console.log("MADE IT");
+            xPop = true;
+        }
+        if(drawBullets[i].PosY > drawBullets[i].toPosY){
+            drawBullets[i].PosY = drawBullets[i].PosY - (drawBullets[i].PosY - drawBullets[i].toPosY)/32;
+        }
+        if(drawBullets[i].PosY < drawBullets[i].toPosY){
+            drawBullets[i].PosY = drawBullets[i].PosY + (drawBullets[i].toPosY - drawBullets[i].PosY)/32;
+        }
+        if((drawBullets[i].PosY >= drawBullets[i].toPosY && drawBullets[i].PosY <= drawBullets[i].toPosY + .9) || 
+           (drawBullets[i].PosY <= drawBullets[i].toPosY && drawBullets[i].PosY >= drawBullets[i].toPosY - .9)){
+            console.log("MADE IT");
+            yPop = true;
+        }
+        if(yPop && xPop){
+            drawBullets[i] = drawBullets[drawBullets.length - 1];
+                drawBullets.pop();
+            }
+    }
 }
 
 
@@ -71,19 +97,21 @@ function draw(){
     //drawing the player to the canvas
     ctx.drawImage(image,player.x, player.y, 100,100);
 
-    //drawing a circle where the player clicks and it actually stays.
-    ctx.beginPath();
-    ctx.arc(player.lastMClickX, player.lastMClickY, 50, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.stroke();
+    //Looping through the drawBullets array
+    for(var i = 0; i < drawBullets.length; i++){
+        console.log(drawBullets[i]);
+        ctx.beginPath();
+        ctx.arc(drawBullets[i].PosX, drawBullets[i].PosY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+    }
 }
 
 //This will continully loop through the update and draw funtions.
 function loop(timestamp) {
     //progress will be the elapsed time since last render.
     var progress = timestamp - lastRender;
-    //testing
-    console.log("Testing space: ");
+    //console.log(progress);
     //updates all game variables before drawing.
     update(progress);
     //draws everything needed drawing to the canvas.
@@ -97,6 +125,20 @@ var lastRender = 0;
 //Window object represents an open window in a browser.
 window.requestAnimationFrame(loop);
 
+    
+    //FUNCTIONS INVLOVED WITH UPDATING INFORMATION
+//If player clicks on the canvas the event will be passed through this function.
+function playerClick(event){
+    console.log("X: " + event.clientX + ", and Y: " + event.clientY);
+    player.lastMClickX = event.clientX;
+    player.lastMClickY = event.clientY;
+
+    var bullet = new Bullet(player.x, player.y, player.lastMClickX,player.lastMClickY);
+    drawBullets.push(bullet);
+
+    console.log(drawBullets);
+    
+}
 
 
 
