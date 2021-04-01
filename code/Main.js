@@ -52,8 +52,8 @@ function update(progress){
                 break;
         }
     }
-
 }
+THIS IS A CRAZY TEST THAT BREAKS THE GAEM!!!
     
 
 function playerClick(event){
@@ -68,7 +68,7 @@ function playerClick(event){
 function draw(){
     //clearing the canvas of everything
     ctx.clearRect(0,0,800,800);
-    
+
     //drawing the player to the canvas
     ctx.drawImage(image,player.x, player.y, 100,100);
 
