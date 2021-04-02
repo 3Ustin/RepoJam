@@ -191,16 +191,17 @@ function playerClick(event){
     // depending on which dir character is facing, change image to match
     if (player.dir == "l") {
         playerImg.src = "img/staffUP-GiantOwlL.png"
-
-    } if (player.dir == "r") { 
+    } 
+    if (player.dir == "r") { 
         playerImg.src = "img/staffUP-GiantOwlR.png"
     }
 
-
+    // Assigning click location to player object.
     console.log("X: " + event.clientX + ", and Y: " + event.clientY);
     player.lastMClickX = event.clientX;
     player.lastMClickY = event.clientY;
 
+    // instantiating Bullet objects
     var bullet = new Bullet(player.x, player.y, player.lastMClickX, player.lastMClickY);
     drawBullets.push(bullet);
 

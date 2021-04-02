@@ -16,14 +16,29 @@
             and stored other places. -->
     <div id="Game">
 
-        <!-- This is the box that hold the top banner of the UI -->
-
-
-        <!-- This is the box that holds canvas -->
-        <div>
-            <canvas id="canvas" height="800" width="800" onkeydown="onKeyDown(event)" onclick="playerClick(event)" id="canvas"></canvas>
+    <!-- FIRST ROW -->
+        <div class="Row">
+            <div class="top-Bar">
+                <h2>50</h2>
+                <img src="GiantOwl.png" alt="Bits amount">
+                
+            </div>
         </div>
 
+    <!-- SECOND ROW -->
+        <div class="Row">
+        <div class="left-Bar"></div>
+        <canvas id="canvas" width="600px" height="600px" onclick="playerClick(event)" id="canvas"></canvas>
+        <div class="right-Bar"></div>
+        </div>
+    <!-- THIRD ROW -->
+        <div class="Row"> 
+            <div class="bottom-Bar">
+                <div class="container">
+                    <button class="Button0"> </button>
+                </div>
+            </div>
+        </div>
         <!-- <img id="big-owl" width="100" height="100" src="img/GiantOwl.png"> -->
     </div>
 
