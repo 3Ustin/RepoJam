@@ -16,7 +16,7 @@ var player = {
     x: 80,
     y: 80,
     dir: "r",
-    imageHight: 256,
+    staffUp: false,
     Rfooting: true,
     timeWalking: 0,
     mPosX: 0,
@@ -137,8 +137,12 @@ function draw(){
     //clearing the canvas of everything
     ctx.clearRect(0,0,800,800);
 
+    ctx.strokeStyle = "#FF0000"; // for testing image bounds
+
     //drawing the player to the canvas
-    ctx.drawImage(playerImg,player.x, player.y, 100, 100);
+    if (player.staffUp) {
+        ctx.drawImage(playerImg,player.x, player.y+3, 100, 120);
+    } else { ctx.drawImage(playerImg,player.x, player.y, 100, 100); }
 
     //Looping through the drawBullets array
     for(var i = 0; i < drawBullets.length; i++){
@@ -173,7 +177,7 @@ window.requestAnimationFrame(loop);
 //If player clicks on the canvas the event will be passed through this function.
 function playerClick(event){
 
-    player.imageHight = 350;
+    player.staffUp = true;
     // depending on which dir character is facing, change image to match
     if (player.dir == "l") {
         playerImg.src = "img/staffUP-GiantOwlL.png"
