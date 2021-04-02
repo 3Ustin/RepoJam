@@ -14,7 +14,15 @@
 .top-Bar{
     background-color: rgb(201, 112, 98);
     height: 40px;
-    width: 640px
+    width: 640px;
+    display: flex;
+    align-items: center;
+}
+.top-Bar h2{
+    margin-left: 20px;
+}
+.top-Bar img{
+    margin-left: 10px;
 }
 
 .left-Bar{
@@ -36,5 +44,8 @@
 
 }
 .Button0{
-
+    margin-top: 10px;
+    margin-left: 20px;
+    height: 80px;
+    width: 80px;
 }
