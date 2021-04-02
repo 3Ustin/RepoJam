@@ -3,12 +3,12 @@ var ctx = document.getElementById("canvas").getContext("2d");
 var playerImg = document.createElement("IMG");
 playerImg.src = "img/GiantOwlL.png";
 
-
 //loading all things that need loading.
 
 window.onload = function initGame(){
-    ctx.drawImage(playerImg,80,80,100,100);
+    ctx.drawImage(playerImg,80,80);
 }
+
 
 
 //VARIABLES
@@ -17,14 +17,18 @@ var player = {
     Health: 20,
     x: 80,
     y: 80,
-    mx: 0,
-    my: 0,
+    dir: "l",
+    staffUp: false, 
+    Rfooting: true, // for walk cycle, which footing image to go to next
+    timeWalking: 0, // for walk cycle, how long til next image
+
+    //player input data
+    mPosX: 0,
+    mPosY: 0,
     lastMClickX: 0,
     lastMClickY: 0,
-    dir: "r",
-    staffUp: false,
-    Rfooting: true,
-    timeWalking: 0
+    keysDown: []
+
 }
 //Bullet Constructor for instantiation of bullet objects
 function Bullet(X, Y, toX,toY) {
@@ -42,67 +46,37 @@ collision.push(player);
 function update(progress){
 
 
-    //This grabs player key input and uses it for updating player position.
-    document.onkeydown = function onKeyDown(e){
-        // console.log("hello, key down");
-        switch(e.key){
-            //Key D -- RIGHT
-            case "d":
-                // walking animation
-                player.timeWalking += 1;
-                if (player.timeWalking >= 3) { 
-                    player.timeWalking = 0;
-                    if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
-                    // console.log("change dir to: " + player.Rfooting)
-                }
-                if (player.Rfooting) { playerImg.src = "img/walkR-legR.png"
-                } else { playerImg.src = "img/walkR-legL.png" }
 
-                player.dir = "r"
-                player.x +=3;
-                break;
-            //Key A -- LEFT
-            case "a":
-                // walking animation
-                player.timeWalking += 1;
-                if (player.timeWalking >= 3) { 
-                    player.timeWalking = 0;
-                    if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
-                    // console.log("change dir to: " + player.Rfooting)
-                }
-                if (player.Rfooting) { playerImg.src = "img/walkL-legR.png"
-                } else { playerImg.src = "img/walkL-legL.png" }
-
-                player.dir = "l"
-                player.x -=3;
-                break;
-            //Key S -- DOWN
-            case "s":
-                player.y +=3;
-                break;
-            //Key W -- UP
-            case "w":
-                player.y -=3;
-                break;
+    // player walking based off keysDown array
+    if (player.keysDown.includes("d")) { // walking right / diaginal right
+        if (player.keysDown.includes("w")) { 
+            playerWalk("wd", "img/walkR-legL.png", "img/walkR-legR.png") 
+        } else if (player.keysDown.includes("s")) {
+            playerWalk("sd", "img/walkR-legL.png", "img/walkR-legR.png") 
+        } else { // if d is pressed but not diaginal
+            playerWalk("d", "img/walkR-legL.png", "img/walkR-legR.png") 
         }
-    }
-    document.onkeyup = function onKeyUp(e){ // on key up change image back to non-walking version..
-        // console.log("hello, key up");
-        switch(e.key){
-            //Key D -- RIGHT
-            case "d":
-                playerImg.src = "img/GiantOwlR.png"; 
-                break;
-            //Key A -- LEFT
-            case "a":
-                playerImg.src = "img/GiantOwlL.png"; 
-                break;
+    } else if (player.keysDown.includes("a")) { // walking left / diaginal left
+        if (player.keysDown.includes("w")) {
+            playerWalk("wa", "img/walkL-legL.png", "img/walkL-legR.png") 
+        } else if (player.keysDown.includes("s")) {
+            playerWalk("sa", "img/walkL-legL.png", "img/walkL-legR.png") 
+        } else { // if a is pressed but not diaginal
+            playerWalk("a", "img/walkL-legL.png", "img/walkL-legR.png") 
         }
     //Runs the collision check;    
     isCollision();
     
+    } else if (player.keysDown.includes("w") && !((player.keysDown.includes("a")) || (player.keysDown.includes("d")))) { // walking up
+        if (player.dir == "l") { playerWalk("w", "img/walkL-legL.png", "img/walkL-legR.png")  }
+        else if (player.dir == "r") { playerWalk("w", "img/walkR-legL.png", "img/walkR-legR.png") }
+    } else if (player.keysDown.includes("s") && !((player.keysDown.includes("a")) || (player.keysDown.includes("d")))) { // walking up
+        if (player.dir == "l") { playerWalk("s", "img/walkL-legL.png", "img/walkL-legR.png")  }
+        else if (player.dir == "r") { playerWalk("s", "img/walkR-legL.png", "img/walkR-legR.png") }
     }
-
+    
+    
+    
 
     //This forLoop's job is to update the bullet's and do everything relating to bullets. 
     //  For now this just means to make the bullets move toward a clicked point,
@@ -148,17 +122,27 @@ function update(progress){
         }
     }
 }
+
+
+
+
+
+
+
+
 //This will draw all of the updates to the canvas.
 function draw(){
     //clearing the canvas of everything
     ctx.clearRect(0,0,800,800);
 
-    ctx.strokeStyle = "#FF0000"; // for testing image bounds
+    ctx.font = "30px Arial";
+    ctx.fillText(player.keysDown, 10, 50); 
+
 
     //drawing the player to the canvas
     if (player.staffUp) {
-        ctx.drawImage(playerImg,player.x, player.y+3, 100, 120);
-    } else { ctx.drawImage(playerImg,player.x, player.y, 100, 100); }
+        ctx.drawImage(playerImg,player.x, player.y-94);
+    } else { ctx.drawImage(playerImg,player.x, player.y); }
 
     //Looping through the drawBullets array
     for(var i = 0; i < drawBullets.length; i++){
@@ -169,6 +153,11 @@ function draw(){
         ctx.stroke();
     }
 }
+
+
+
+
+
 
 //This will continully loop through the update and draw funtions.
 function loop(timestamp) {
@@ -188,6 +177,13 @@ var lastRender = 0;
 //Window object represents an open window in a browser.
 window.requestAnimationFrame(loop);
 
+
+
+
+
+
+
+
     
 //FUNCTIONS INVLOVED WITH UPDATING INFORMATION
 //If player clicks on the canvas the event will be passed through this function.
@@ -197,22 +193,40 @@ function playerClick(event){
     // depending on which dir character is facing, change image to match
     if (player.dir == "l") {
         playerImg.src = "img/staffUP-GiantOwlL.png"
-    } 
-    if (player.dir == "r") { 
+    } if (player.dir == "r") { 
         playerImg.src = "img/staffUP-GiantOwlR.png"
     }
 
-    // Assigning click location to player object.
-    //console.log("X: " + event.clientX + ", and Y: " + event.clientY);
-    player.lastMClickX = event.clientX;
-    player.lastMClickY = event.clientY;
+    // after some time, stop the staff going up
+    setTimeout( () => {
+        player.staffUp = false;
+
+        if (player.dir == "l") {
+            playerImg.src = "img/GiantOwlL.png"
+        } if (player.dir == "r") { 
+            playerImg.src = "img/GiantOwlR.png"
+        }
+      }, 250); // 1/4 a millasec
 
     //check if bits change;
     changeBits();
 
-    // instantiating Bullet objects, push to collision and drawBullets array.
-    var bullet = new Bullet(player.x, player.y, player.lastMClickX, player.lastMClickY);
+
+
+    // create bullets
+    console.log("X: " + event.clientX + ", and Y: " + event.clientY);
+    player.lastMClickX = event.clientX;
+    player.lastMClickY = event.clientY;
+    // create bullet bases on direction owl is facing
+    if (player.dir == "l") {
+        var bullet = new Bullet(player.x, player.y, player.lastMClickX, player.lastMClickY);
+    } else if (player.dir == "r") {
+        var bullet = new Bullet(player.x+259, player.y, player.lastMClickX, player.lastMClickY);
+    }
+
+    //Bullets being checked on collision
     collision.push(bullet);
+    //Bullets being pushed to the draw function.
     drawBullets.push(bullet);
 
     console.log(drawBullets);
@@ -275,3 +289,43 @@ function restartGame(){
 
 
 
+function playerWalk(direction, imgSrcLegL, imgSrcLegR) {
+    // walking animation
+    player.timeWalking += 1;
+    if (player.timeWalking >= 3) { 
+        player.timeWalking = 0;
+        if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
+        // console.log("change dir to: " + player.Rfooting)
+    }
+    if (player.Rfooting && !player.staffUp) { playerImg.src = imgSrcLegR
+    } else if (!player.Rfooting && !player.staffUp) { playerImg.src = imgSrcLegL }
+
+    if (direction == "d") { player.dir = "r"; player.x +=3; } 
+    else if (direction == "a") {  player.dir = "l"; player.x -=3; }
+    else if (direction == "w") {  player.y -=3; }
+    else if (direction == "s") {  player.y +=3; }
+    // diagnal directions
+    if (direction == "wd") { player.dir = "r"; player.x +=3; player.y -=3; }
+    else if (direction == "wa") {  player.dir = "l"; player.x -=3; player.y -=3; }
+    else if (direction == "sd") {  player.dir = "r"; player.x +=3; player.y +=3; }
+    else if (direction == "sa") {  player.dir = "l"; player.x -=3; player.y +=3; }
+}
+
+
+
+// player input, update the players' keysDown array (used for drawing image of player)
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+function onKeyDown(e){ 
+    if (e.key == "d" && !player.keysDown.includes("d") && !player.keysDown.includes("a"))  { player.dir = "r"; player.keysDown.push("d"); }
+    if (e.key == "a" && !player.keysDown.includes("a") && !player.keysDown.includes("d")) { player.dir = "l"; player.keysDown.push("a"); }
+    if (e.key == "s" && !player.keysDown.includes("s") && !player.keysDown.includes("w")) { player.keysDown.push("s"); }
+    if (e.key == "w" && !player.keysDown.includes("w") && !player.keysDown.includes("s")) { player.keysDown.push("w"); }
+}
+function onKeyUp(e){ // if key is up take it out of the keysDown array
+    if (e.key == "d") { if (player.keysDown.includes("d")) { player.keysDown.splice(player.keysDown[player.keysDown.indexOf("d")], 1); player.keysDown.splice(player.keysDown[player.keysDown.indexOf("d")], 1);}
+    } if (e.key == "a") { if (player.keysDown.includes("a")) { player.keysDown.splice(player.keysDown[player.keysDown.indexOf("a")], 1); player.keysDown.splice(player.keysDown[player.keysDown.indexOf("a")], 1);}
+    } if (e.key == "s") { if (player.keysDown.includes("s")) { player.keysDown.splice(player.keysDown[player.keysDown.indexOf("s")], 1); player.keysDown.splice(player.keysDown[player.keysDown.indexOf("s")], 1);}
+    } if (e.key == "w") {if (player.keysDown.includes("w")) { player.keysDown.splice(player.keysDown[player.keysDown.indexOf("w")], 1); player.keysDown.splice(player.keysDown[player.keysDown.indexOf("w")], 1);}
+    }
+}
