@@ -1,6 +1,51 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
 #canvas{
-    background-color: bisque;
-}  
-#game{
-    
+    background-color: rgb(188, 197, 149);
+}
+.Row{
+    display: flex;
+}
+#Game{
+
+}
+.top-Bar{
+    background-color: rgb(201, 112, 98);
+    height: 40px;
+    width: 640px;
+    display: flex;
+    align-items: center;
+}
+.top-Bar h2{
+    margin-left: 20px;
+}
+.top-Bar img{
+    margin-left: 10px;
+}
+
+.left-Bar{
+    background-color: rgb(201, 112, 98);
+    height: 600px;
+    width: 20px;
+}
+.right-Bar{
+    background-color: rgb(201, 112, 98);
+    height: 600px;
+    width: 20px;
+}
+.bottom-Bar{
+    background-color: rgb(201, 112, 98);
+    height: 100px;
+    width: 640px
+}
+.container{
+
+}
+.Button0{
+    margin-top: 10px;
+    margin-left: 20px;
+    height: 80px;
+    width: 80px;
 }
