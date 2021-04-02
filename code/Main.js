@@ -1,19 +1,24 @@
 //initilizing variables and canvas
 var ctx = document.getElementById("canvas").getContext("2d");
-// var image = document.getElementById("big-owl");
 var playerImg = document.createElement("IMG");
 playerImg.src = "img/GiantOwlL.png";
-// document.body.appendChild(image);
+
 
 //loading all things that need loading.
 window.onload = function initGame(){
     ctx.drawImage(playerImg,80,80,100,100);
 }
-    //VARIABLES
+
+
+//VARIABLES
 //Player Object holding position
 var player = {
     x: 80,
     y: 80,
+    dir: "r",
+    imageHight: 256,
+    Rfooting: true,
+    timeWalking: 0,
     mPosX: 0,
     mPosY: 0,
     lastMClickX: 0,
@@ -34,15 +39,29 @@ function update(progress){
 
     //This grabs player key input and uses it for updating player position.
     document.onkeydown = function onKeyDown(e){
-        console.log("hello, key down");
+        // console.log("hello, key down");
         switch(e.key){
             //Key D -- RIGHT
             case "d":
-                playerImg.src = "img/walkR-legR.png"; 
+                // keeping track of var for changing walking animation
+                player.timeWalking += 1;
+                if (player.timeWalking >= 50) { player.timeWalking = 0; Rfooting = !Rfooting; }
+
+                console.log("change footing")
+                if (player.Rfooting) {
+                    playerImg.src = "img/walkR-legR.png"
+                } else {
+                    playerImg.src = "img/walkR-legL.png"
+                }
+
+
+                player.dir = "r"
+                // playerImg.src = "img/walkR-legR.png"; 
                 player.x +=3;
                 break;
             //Key A -- LEFT
             case "a":
+                player.dir = "l"
                 playerImg.src = "img/walkL-legL.png"; 
                 player.x -=3;
                 break;
@@ -57,7 +76,7 @@ function update(progress){
         }
     }
     document.onkeyup = function onKeyUp(e){ // on key up change image back to non-walking version..
-        console.log("hello, key up");
+        // console.log("hello, key up");
         switch(e.key){
             //Key D -- RIGHT
             case "d":
@@ -113,7 +132,7 @@ function draw(){
     ctx.clearRect(0,0,800,800);
 
     //drawing the player to the canvas
-    ctx.drawImage(playerImg,player.x, player.y, 100,100);
+    ctx.drawImage(playerImg,player.x, player.y, 100, 100);
 
     //Looping through the drawBullets array
     for(var i = 0; i < drawBullets.length; i++){
@@ -144,14 +163,25 @@ var lastRender = 0;
 window.requestAnimationFrame(loop);
 
     
-    //FUNCTIONS INVLOVED WITH UPDATING INFORMATION
+//FUNCTIONS INVLOVED WITH UPDATING INFORMATION
 //If player clicks on the canvas the event will be passed through this function.
 function playerClick(event){
+
+    player.imageHight = 350;
+    // depending on which dir character is facing, change image to match
+    if (player.dir == "l") {
+        playerImg.src = "img/staffUP-GiantOwlL.png"
+
+    } if (player.dir == "r") { 
+        playerImg.src = "img/staffUP-GiantOwlR.png"
+    }
+
+
     console.log("X: " + event.clientX + ", and Y: " + event.clientY);
     player.lastMClickX = event.clientX;
     player.lastMClickY = event.clientY;
 
-    var bullet = new Bullet(player.x, player.y, player.lastMClickX,player.lastMClickY);
+    var bullet = new Bullet(player.x, player.y, player.lastMClickX, player.lastMClickY);
     drawBullets.push(bullet);
 
     console.log(drawBullets);
