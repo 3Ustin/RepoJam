@@ -5,6 +5,7 @@ playerImg.src = "img/GiantOwlL.png";
 
 
 //loading all things that need loading.
+
 window.onload = function initGame(){
     ctx.drawImage(playerImg,80,80,100,100);
 }
@@ -13,28 +14,30 @@ window.onload = function initGame(){
 //VARIABLES
 //Player Object holding position
 var player = {
+    Health: 20,
     x: 80,
     y: 80,
+    mx: 0,
+    my: 0,
+    lastMClickX: 0,
+    lastMClickY: 0,
     dir: "r",
     staffUp: false,
     Rfooting: true,
-    timeWalking: 0,
-    mPosX: 0,
-    mPosY: 0,
-    lastMClickX: 0,
-    lastMClickY: 0
+    timeWalking: 0
 }
 //Bullet Constructor for instantiation of bullet objects
-function Bullet(x, y, toX,toY) {
-    this.PosX = x;
-    this.PosY = y;
-    this.toPosX = toX;
-    this.toPosY = toY;
+function Bullet(X, Y, toX,toY) {
+    this.x = X;
+    this.y = Y;
+    this.tox = toX;
+    this.toy = toY;
 }
 //Array of bullets to be drawn.
 var drawBullets = [];
-//Draw Boxes
-var drawBoxes = [];
+//A variable to hold all collisionable objects.
+var collision = [];
+collision.push(player);
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
 
@@ -95,6 +98,9 @@ function update(progress){
                 playerImg.src = "img/GiantOwlL.png"; 
                 break;
         }
+    //Runs the collision check;    
+    isCollision();
+    
     }
 
 
@@ -106,33 +112,33 @@ function update(progress){
         var xPop = false;
         var yPop = false;
 
-        //FOR TESTING ::: console.log("Update Bullets: " + drawBullets[i] + drawBullets[i].PosY);
+        //FOR TESTING ::: console.log("Update Bullets: " + drawBullets[i] + drawBullets[i].y);
 
         //If the bullet needs to go down make it go down.
-        if(drawBullets[i].PosX > drawBullets[i].toPosX){
-            //I think these are linear, but I PosX and toPosx are different variables. 
-            drawBullets[i].PosX = drawBullets[i].PosX - (drawBullets[i].PosX - drawBullets[i].toPosX)/32;
+        if(drawBullets[i].x > drawBullets[i].tox){
+            //I think these are linear, but I x and tox are different variables. 
+            drawBullets[i].x = drawBullets[i].x - (drawBullets[i].x - drawBullets[i].tox)/32;
         }
         //If we are lower than where we need to go, go up.
-        if(drawBullets[i].PosX < drawBullets[i].toPosX){
-            drawBullets[i].PosX = drawBullets[i].PosX + (drawBullets[i].toPosX - drawBullets[i].PosX)/32;
+        if(drawBullets[i].x < drawBullets[i].tox){
+            drawBullets[i].x = drawBullets[i].x + (drawBullets[i].tox - drawBullets[i].x)/32;
         }
         //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
-        if((drawBullets[i].PosX <= drawBullets[i].toPosX + .9 && drawBullets[i].PosX >= drawBullets[i].toPosX) || 
-            (drawBullets[i].PosX >= drawBullets[i].toPosX - .9 && drawBullets[i].PosX <= drawBullets[i].toPosX)){
+        if((drawBullets[i].x <= drawBullets[i].tox + .9 && drawBullets[i].x >= drawBullets[i].tox) || 
+            (drawBullets[i].x >= drawBullets[i].tox - .9 && drawBullets[i].x <= drawBullets[i].tox)){
             xPop = true;
         }
         //If we are higher than where we need to go, go down.
-        if(drawBullets[i].PosY > drawBullets[i].toPosY){
-            drawBullets[i].PosY = drawBullets[i].PosY - (drawBullets[i].PosY - drawBullets[i].toPosY)/32;
+        if(drawBullets[i].y > drawBullets[i].toy){
+            drawBullets[i].y = drawBullets[i].y - (drawBullets[i].y - drawBullets[i].toy)/32;
         }
         //If we are lower than where we need to go, go up.
-        if(drawBullets[i].PosY < drawBullets[i].toPosY){
-            drawBullets[i].PosY = drawBullets[i].PosY + (drawBullets[i].toPosY - drawBullets[i].PosY)/32;
+        if(drawBullets[i].y < drawBullets[i].toy){
+            drawBullets[i].y = drawBullets[i].y + (drawBullets[i].toy - drawBullets[i].y)/32;
         }
         //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
-        if((drawBullets[i].PosY >= drawBullets[i].toPosY && drawBullets[i].PosY <= drawBullets[i].toPosY + .9) || 
-            (drawBullets[i].PosY <= drawBullets[i].toPosY && drawBullets[i].PosY >= drawBullets[i].toPosY - .9)){
+        if((drawBullets[i].y >= drawBullets[i].toy && drawBullets[i].y <= drawBullets[i].toy + .9) || 
+            (drawBullets[i].y <= drawBullets[i].toy && drawBullets[i].y >= drawBullets[i].toy - .9)){
             yPop = true;
         }
         //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
@@ -156,9 +162,9 @@ function draw(){
 
     //Looping through the drawBullets array
     for(var i = 0; i < drawBullets.length; i++){
-        console.log(drawBullets[i]);
+        //console.log(drawBullets[i]);
         ctx.beginPath();
-        ctx.arc(drawBullets[i].PosX, drawBullets[i].PosY, 5, 0, 2 * Math.PI);
+        ctx.arc(drawBullets[i].x, drawBullets[i].y, 5, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
@@ -197,17 +203,75 @@ function playerClick(event){
     }
 
     // Assigning click location to player object.
-    console.log("X: " + event.clientX + ", and Y: " + event.clientY);
+    //console.log("X: " + event.clientX + ", and Y: " + event.clientY);
     player.lastMClickX = event.clientX;
     player.lastMClickY = event.clientY;
 
-    // instantiating Bullet objects
+    //check if bits change;
+    changeBits();
+
+    // instantiating Bullet objects, push to collision and drawBullets array.
     var bullet = new Bullet(player.x, player.y, player.lastMClickX, player.lastMClickY);
+    collision.push(bullet);
     drawBullets.push(bullet);
 
     console.log(drawBullets);
     
 }
+
+function isCollision(){
+    console.log("collisionIsRunnging");
+    for(var i = 0; i<collision.length;i++){
+        var iX = collision[i].x
+        var iY = collision[i].y
+        for(var j = 0; j < collision.length; j++){
+            var jX = collision[j].x;
+            var jY = collision[j].y;
+            if(iX == jX && iY == jY){
+                console.log(collision[i], " :Is Colliding with: ", collision[j])
+            }
+        }
+    }
+}
+
+function changeBits(){
+    var bits = document.getElementById("bits");
+    bits.innerText = parseInt(bits.innerText) - 1;
+    if(bits.innerText == "0"){
+        console.log("here");
+        restartGame();
+    }
+}
+
+function restartGame(){
+    ctx.clearRect(0,0,800,800);
+    ctx.drawImage(playerImg,80,80,100,100);
+    drawBullets = [];
+    collision = [];
+    player.Health = 20;
+    var bits = document.getElementById("bits");
+    bits.innerText = player.Health;
+    player.x = 80;
+    player.y = 80;
+    player.mx = 0;
+    player.my = 0;
+    player.lastMClickX = 0;
+    player.lastMClickY =  0;
+    player.dir = "r";
+    player.staffUp = false;
+    player.Rfooting =  true;
+    player.timeWalking = 0;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
