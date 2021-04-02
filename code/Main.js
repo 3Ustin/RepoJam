@@ -27,7 +27,9 @@ function Bullet(x, y, toX,toY) {
     this.toPosY = toY;
 }
 //Array of bullets to be drawn.
-var drawBullets = []
+var drawBullets = [];
+//Draw Boxes
+var drawBoxes = [];
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
 //This grabs player key input and uses it for updating player position.
@@ -53,42 +55,50 @@ function update(progress){
         }
     }
 
-    //Update bullets
+    //This forLoop's job is to update the bullet's and do everything relating to bullets. 
+    //  For now this just means to make the bullets move toward a clicked point,
+    //  and stop. Then it re-stores the last spot in the array then pops it.
     for(var i = 0; i < drawBullets.length; i++){
+        //xPop and yPop are boolean variables seeking to ask if the current drawBullet should be popped.
         var xPop = false;
         var yPop = false;
-        console.log("Update Bullets: " + drawBullets[i] + drawBullets[i].PosY);
+
+        //FOR TESTING ::: console.log("Update Bullets: " + drawBullets[i] + drawBullets[i].PosY);
+
+        //If the bullet needs to go down make it go down.
         if(drawBullets[i].PosX > drawBullets[i].toPosX){
+            //I think these are linear, but I PosX and toPosx are different variables. 
             drawBullets[i].PosX = drawBullets[i].PosX - (drawBullets[i].PosX - drawBullets[i].toPosX)/32;
         }
+        //If we are lower than where we need to go, go up.
         if(drawBullets[i].PosX < drawBullets[i].toPosX){
             drawBullets[i].PosX = drawBullets[i].PosX + (drawBullets[i].toPosX - drawBullets[i].PosX)/32;
         }
+        //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
         if((drawBullets[i].PosX <= drawBullets[i].toPosX + .9 && drawBullets[i].PosX >= drawBullets[i].toPosX) || 
-           (drawBullets[i].PosX >= drawBullets[i].toPosX - .9 && drawBullets[i].PosX <= drawBullets[i].toPosX)){
-            console.log("MADE IT");
+            (drawBullets[i].PosX >= drawBullets[i].toPosX - .9 && drawBullets[i].PosX <= drawBullets[i].toPosX)){
             xPop = true;
         }
+        //If we are higher than where we need to go, go down.
         if(drawBullets[i].PosY > drawBullets[i].toPosY){
             drawBullets[i].PosY = drawBullets[i].PosY - (drawBullets[i].PosY - drawBullets[i].toPosY)/32;
         }
+        //If we are lower than where we need to go, go up.
         if(drawBullets[i].PosY < drawBullets[i].toPosY){
             drawBullets[i].PosY = drawBullets[i].PosY + (drawBullets[i].toPosY - drawBullets[i].PosY)/32;
         }
+        //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
         if((drawBullets[i].PosY >= drawBullets[i].toPosY && drawBullets[i].PosY <= drawBullets[i].toPosY + .9) || 
-           (drawBullets[i].PosY <= drawBullets[i].toPosY && drawBullets[i].PosY >= drawBullets[i].toPosY - .9)){
-            console.log("MADE IT");
+            (drawBullets[i].PosY <= drawBullets[i].toPosY && drawBullets[i].PosY >= drawBullets[i].toPosY - .9)){
             yPop = true;
         }
+        //Check to see if we are at a logical stopping point. AKA close enough to the finish line.
         if(yPop && xPop){
             drawBullets[i] = drawBullets[drawBullets.length - 1];
-                drawBullets.pop();
-            }
+            drawBullets.pop();
+        }
     }
 }
-
-
-
 //This will draw all of the updates to the canvas.
 function draw(){
     //clearing the canvas of everything
