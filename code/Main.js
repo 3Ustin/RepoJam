@@ -43,26 +43,32 @@ function update(progress){
         switch(e.key){
             //Key D -- RIGHT
             case "d":
-                // keeping track of var for changing walking animation
+                // walking animation
                 player.timeWalking += 1;
-                if (player.timeWalking >= 50) { player.timeWalking = 0; Rfooting = !Rfooting; }
-
-                console.log("change footing")
-                if (player.Rfooting) {
-                    playerImg.src = "img/walkR-legR.png"
-                } else {
-                    playerImg.src = "img/walkR-legL.png"
+                if (player.timeWalking >= 3) { 
+                    player.timeWalking = 0;
+                    if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
+                    // console.log("change dir to: " + player.Rfooting)
                 }
-
+                if (player.Rfooting) { playerImg.src = "img/walkR-legR.png"
+                } else { playerImg.src = "img/walkR-legL.png" }
 
                 player.dir = "r"
-                // playerImg.src = "img/walkR-legR.png"; 
                 player.x +=3;
                 break;
             //Key A -- LEFT
             case "a":
+                // walking animation
+                player.timeWalking += 1;
+                if (player.timeWalking >= 3) { 
+                    player.timeWalking = 0;
+                    if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
+                    // console.log("change dir to: " + player.Rfooting)
+                }
+                if (player.Rfooting) { playerImg.src = "img/walkL-legR.png"
+                } else { playerImg.src = "img/walkL-legL.png" }
+
                 player.dir = "l"
-                playerImg.src = "img/walkL-legL.png"; 
                 player.x -=3;
                 break;
             //Key S -- DOWN
