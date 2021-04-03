@@ -1,4 +1,5 @@
 //initilizing variables and canvas
+var canvas = document.getElementById("canvas");
 var ctx = document.getElementById("canvas").getContext("2d");
 var playerImg = document.createElement("IMG");
 playerImg.src = "img/GiantOwlL.png";
@@ -21,6 +22,7 @@ var player = {
     staffUp: false, 
     Rfooting: true, // for walk cycle, which footing image to go to next
     timeWalking: 0, // for walk cycle, how long til next image
+    staffWalking: 0,
 
     //player input data
     mPosX: 0,
@@ -42,40 +44,48 @@ var drawBullets = [];
 //A variable to hold all collisionable objects.
 var collision = [];
 collision.push(player);
+
+
+
+
 //This will update the state of the world for the elapsed time since last render.
 function update(progress){
-
 
 
     // player walking based off keysDown array
     if (player.keysDown.includes("d")) { // walking right / diaginal right
         if (player.keysDown.includes("w")) { 
-            playerWalk("wd", "img/walkR-legL.png", "img/walkR-legR.png") 
+            playerWalk("wd", "img/walkR-legL.png", "img/walkR-legR.png", "img/staffR-legL.png", "img/staffR-legR.png") 
         } else if (player.keysDown.includes("s")) {
-            playerWalk("sd", "img/walkR-legL.png", "img/walkR-legR.png") 
+            playerWalk("sd", "img/walkR-legL.png", "img/walkR-legR.png", "img/staffR-legL.png", "img/staffR-legR.png") 
         } else { // if d is pressed but not diaginal
-            playerWalk("d", "img/walkR-legL.png", "img/walkR-legR.png") 
+            playerWalk("d", "img/walkR-legL.png", "img/walkR-legR.png", "img/staffR-legL.png", "img/staffR-legR.png") 
         }
     } else if (player.keysDown.includes("a")) { // walking left / diaginal left
         if (player.keysDown.includes("w")) {
-            playerWalk("wa", "img/walkL-legL.png", "img/walkL-legR.png") 
+            playerWalk("wa", "img/walkL-legL.png", "img/walkL-legR.png", "img/staffL-legL.png", "img/staffL-legR.png") 
         } else if (player.keysDown.includes("s")) {
-            playerWalk("sa", "img/walkL-legL.png", "img/walkL-legR.png") 
+            playerWalk("sa", "img/walkL-legL.png", "img/walkL-legR.png", "img/staffL-legL.png", "img/staffL-legR.png") 
         } else { // if a is pressed but not diaginal
-            playerWalk("a", "img/walkL-legL.png", "img/walkL-legR.png") 
+            playerWalk("a", "img/walkL-legL.png", "img/walkL-legR.png", "img/staffL-legL.png", "img/staffL-legR.png") 
         }
-    //Runs the collision check;    
-    isCollision();
-    
     } else if (player.keysDown.includes("w") && !((player.keysDown.includes("a")) || (player.keysDown.includes("d")))) { // walking up
-        if (player.dir == "l") { playerWalk("w", "img/walkL-legL.png", "img/walkL-legR.png")  }
-        else if (player.dir == "r") { playerWalk("w", "img/walkR-legL.png", "img/walkR-legR.png") }
+        if (player.dir == "l") { playerWalk("w", "img/walkL-legL.png", "img/walkL-legR.png", "img/staffL-legL.png", "img/staffL-legR.png")  }
+        else if (player.dir == "r") { playerWalk("w", "img/walkR-legL.png", "img/walkR-legR.png", "img/staffR-legL.png", "img/staffR-legR.png") }
     } else if (player.keysDown.includes("s") && !((player.keysDown.includes("a")) || (player.keysDown.includes("d")))) { // walking up
-        if (player.dir == "l") { playerWalk("s", "img/walkL-legL.png", "img/walkL-legR.png")  }
-        else if (player.dir == "r") { playerWalk("s", "img/walkR-legL.png", "img/walkR-legR.png") }
+        if (player.dir == "l") { playerWalk("s", "img/walkL-legL.png", "img/walkL-legR.png", "img/staffL-legL.png", "img/staffL-legR.png")  }
+        else if (player.dir == "r") { playerWalk("s", "img/walkR-legL.png", "img/walkR-legR.png", "img/staffR-legL.png", "img/staffR-legR.png") }
     }
     
-    
+
+    //player click
+    // canvas.onclick = playerClick;
+
+
+    //Runs the collision check;    
+    isCollision();
+
+
     
 
     //This forLoop's job is to update the bullet's and do everything relating to bullets. 
@@ -188,13 +198,12 @@ window.requestAnimationFrame(loop);
 //FUNCTIONS INVLOVED WITH UPDATING INFORMATION
 //If player clicks on the canvas the event will be passed through this function.
 function playerClick(event){
-
     player.staffUp = true;
-    // depending on which dir character is facing, change image to match
+
     if (player.dir == "l") {
-        playerImg.src = "img/staffUP-GiantOwlL.png"
-    } if (player.dir == "r") { 
-        playerImg.src = "img/staffUP-GiantOwlR.png"
+        playerImg.src = "img/staffL-legL.png"
+    } else if (player.dir == "r") {
+        playerImg.src = "img/staffR-legL.png"
     }
 
     // after some time, stop the staff going up
@@ -206,7 +215,7 @@ function playerClick(event){
         } if (player.dir == "r") { 
             playerImg.src = "img/GiantOwlR.png"
         }
-      }, 250); // 1/4 a millasec
+      }, 1000); // 1/4 a millasec
 
     //check if bits change;
     changeBits();
@@ -289,7 +298,7 @@ function restartGame(){
 
 
 
-function playerWalk(direction, imgSrcLegL, imgSrcLegR) {
+function playerWalk(direction, imgSrcLegL, imgSrcLegR, staffSrcLegL, staffSrcLegR) {
     // walking animation
     player.timeWalking += 1;
     if (player.timeWalking >= 3) { 
@@ -297,8 +306,14 @@ function playerWalk(direction, imgSrcLegL, imgSrcLegR) {
         if (player.Rfooting) { player.Rfooting = false} else { player.Rfooting = true}
         // console.log("change dir to: " + player.Rfooting)
     }
-    if (player.Rfooting && !player.staffUp) { playerImg.src = imgSrcLegR
-    } else if (!player.Rfooting && !player.staffUp) { playerImg.src = imgSrcLegL }
+    if (player.staffUp) {
+        if (player.Rfooting) { playerImg.src = staffSrcLegR
+        } else if (!player.Rfooting) { playerImg.src = staffSrcLegL }
+    } else {
+        if (player.Rfooting) { playerImg.src = imgSrcLegR
+        } else if (!player.Rfooting) { playerImg.src = imgSrcLegL }
+    }
+
 
     if (direction == "d") { player.dir = "r"; player.x +=3; } 
     else if (direction == "a") {  player.dir = "l"; player.x -=3; }
